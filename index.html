@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <style>
+            #out {
+                font-family: 'Courier New', Courier, monospace;
+            }
+        </style>
+        <script type="text/javascript" src="js/parserPeople.js"></script>
+        <script type="text/javascript" src="js/parserEpicExcel.js"></script>
+    </head>
+
+    <body onpaste="parsePased(event)">
+        <div id="err" style="color:red">&nbsp;</div>
+        <div id="out"></div>
+
+        <script type="text/javascript">
+            var cleanRules = new Array(
+                {'cmd': 'delete', }
+            );
+
+            function error(text) {
+                document.getElementById("err").innerText += text;
+                setTimeout(function() {
+                    document.getElementById("err").innerText = "";
+                }, 2000);
+            }
+
+            function excelBool(bo) {
+                return (bo ? "SANN" : "USANN") ;
+            }
+
+            
+
+            function dataToHtml(data) {
+                let html = "<table>";
+                for(let i = 0; i < data.length; i++) {
+                    html += "<tr><td>" + data[i][0] + "</td><td>" + data[i][1] + "</td><td>" + excelBool(data[i][2]) + "</td><td>" + excelBool(data[i][3]) + "</td><td>" + data[i][4] + "</td></tr>";
+                }
+
+                html += "</table>";
+
+                error("Dumped " + data.length + " rows")
+
+                return html;
+            }
+
+            function parsePased(ev) {
+                //console.log(ev);
+                text = ev.clipboardData.getData("text/plain");
+                //data = parserPeople.parse(text);
+                data = parserEpicExcel.parse(text);
+                
+                document.getElementById("out").innerHTML = dataToHtml(data);
+                
+                return false;
+            }
+        </script>
+    </body>
+</html>
